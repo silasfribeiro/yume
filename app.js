@@ -8,7 +8,7 @@ import * as caixa from './pg-caixa.js';
 import * as boxPg from './pg-box.js';
 import * as eventos from './pg-eventos.js';
 import * as configPg from './pg-config.js';
-import { iniciarPush, pushConfigurado } from './push.js';
+import { iniciarPush } from './push.js';
 
 const BRAND = (window.APP_CONFIG || {}).BRAND || 'Yume';
 document.title = `${BRAND} · Estoque`;
@@ -134,5 +134,5 @@ async function iniciar() {
   });
 })();
 
-// O OneSignal registra o sw.js quando está configurado; sem ele, registramos aqui.
-if ('serviceWorker' in navigator && !pushConfigurado()) navigator.serviceWorker.register('sw.js').catch(() => {});
+// Registra o sw.js (o mesmo que o OneSignal usa para as notificações)
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

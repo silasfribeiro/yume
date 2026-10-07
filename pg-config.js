@@ -74,9 +74,11 @@ export async function render(el) {
         <div class="card"><h3>📱 App para Android</h3>
           <p class="small" style="margin-top:6px">Instale o Yume no celular como app, em tela cheia e com notificações. Ele se atualiza sozinho.</p>
           <a class="btn sec" href="android.html">${ic('download')}Baixar o app Android</a></div>
-        <div class="card"><h3>${ic('backup')} Backup</h3>
-          <p class="small" style="margin-top:6px">Baixa todos os dados (produtos, estoque, vendas, eventos) num arquivo. Vale fazer uma vez por mês e guardar no Drive.</p>
-          <button class="btn sec" id="bkp">${ic('download')}Baixar backup</button></div>
+        <div class="card"><h3>📊 Relatório e backup</h3>
+          <p class="small" style="margin-top:6px">Planilha do Excel com resumo geral, estoque por local, vendas por produto e por mês, venda direta e online, Box, eventos e todas as vendas.</p>
+          <button class="btn" id="rel">${ic('download')}Baixar relatório (Excel)</button>
+          <p class="small muted" style="margin:14px 0 6px">Backup técnico: guarda tudo num arquivo que serve para restaurar o sistema se precisar. Vale guardar no Drive uma vez por mês.</p>
+          <button class="btn sec sm" id="bkp">${ic('backup')}Baixar backup completo</button></div>
         <div class="card"><h3>Conta</h3><p class="small" style="margin-top:6px">Conectado como <b>${esc(user?.email || '')}</b></p>
           <div class="row"><button class="btn sec" id="senha">${ic('edit')}Trocar minha senha</button><button class="btn sec" id="sair">${ic('logout')}Sair</button></div></div>
       </div>
@@ -99,6 +101,12 @@ export async function render(el) {
       } else toast(e.message, true);
     }
   });
+  $('#rel', el).onclick = async () => {
+    const b = $('#rel', el); b.disabled = true; b.textContent = 'Gerando planilha...';
+    try { const { gerarRelatorio } = await import('./relatorio.js'); await gerarRelatorio(); toast('Relatório baixado 📊'); }
+    catch (e) { console.error(e); toast(e.message, true); }
+    b.disabled = false; b.innerHTML = `${ic('download')}Baixar relatório (Excel)`;
+  };
   $('#bkp', el).onclick = async () => {
     const b = $('#bkp', el); b.disabled = true; b.textContent = 'Gerando...';
     try {
@@ -108,7 +116,7 @@ export async function render(el) {
       baixarArquivo(`backup-yume-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ gerado_em: new Date().toISOString(), ...dados }, null, 1), 'application/json');
       toast('Backup baixado 🌿');
     } catch (e) { toast(e.message, true); }
-    b.disabled = false; b.innerHTML = `${ic('download')}Baixar backup`;
+    b.disabled = false; b.innerHTML = `${ic('backup')}Baixar backup completo`;
   };
   $('#sair', el).onclick = () => sb.auth.signOut();
   el.querySelectorAll('[data-notif]').forEach(cb => cb.onchange = async () => {

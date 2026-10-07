@@ -1,5 +1,5 @@
 import { sb, S, q, cat, col, loc, prod, est, estTotal, estPorLocal, estoqueBaixo, atelie, locaisFixos, recarregarEstoque, recarregarProdutos, uploadFoto, canalNome } from './db.js';
-import { ic, esc, money, num, toast, modal, confirmar, vazio, fotoHTML, parseNum, redimensionar, baixarArquivo, csv, dataHoraBR, qtyHTML, bindQty, $ } from './ui.js';
+import { corBadge, ic, esc, money, num, toast, modal, confirmar, vazio, fotoHTML, parseNum, redimensionar, baixarArquivo, csv, dataHoraBR, qtyHTML, bindQty, $ } from './ui.js';
 
 const filtro = { busca: '', cat: '', col: '', local: '', inativos: false };
 
@@ -16,7 +16,7 @@ export function cardProduto(p, extra = '') {
         <span class="preco">${money(p.preco)}</span>
         <span class="small"><b>${num(total)}</b> un.</span>
       </div>
-      ${c ? `<div><span class="badge" style="background:${esc(c.cor || '#A6C969')}">${esc(c.nome)}</span></div>` : ''}
+      ${c ? `<div><span class="badge" style="${corBadge(c.cor)}">${esc(c.nome)}</span></div>` : ''}
       ${extra}
     </div></a>`;
 }
@@ -223,7 +223,7 @@ export async function renderDetalhe(el, id, vivo) {
           <h1>${esc(p.nome)}</h1>
           ${p.variacao ? `<div class="muted">${esc(p.variacao)}</div>` : ''}
           <div class="row" style="margin-top:8px">
-            ${c ? `<span class="badge" style="background:${esc(c.cor || '#A6C969')}">${esc(c.nome)}</span>` : ''}
+            ${c ? `<span class="badge" style="${corBadge(c.cor)}">${esc(c.nome)}</span>` : ''}
             ${co ? `<span class="badge nevoa">${ic('sparkle')}${esc(co.nome)}</span>` : ''}
             ${p.sku ? `<span class="badge nevoa">${esc(p.sku)}</span>` : ''}
             ${!p.ativo ? `<span class="badge erro">inativo</span>` : ''}

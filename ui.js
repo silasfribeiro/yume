@@ -33,6 +33,14 @@ export const ic = (n, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24"
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+// Estilo de etiqueta com texto legível sobre qualquer cor
+export function corBadge(hex) {
+  const h = String(hex || '#A6C969').replace('#', '');
+  const n = h.length === 3 ? h.split('').map(x => x + x).join('') : h;
+  const r = parseInt(n.slice(0, 2), 16), g = parseInt(n.slice(2, 4), 16), b = parseInt(n.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return `background:#${n};color:${lum < 0.55 ? '#F6F1DB' : '#3F4531'}`;
+}
 export const money = (v) => brl.format(Number(v) || 0);
 export const num = (v) => new Intl.NumberFormat('pt-BR').format(Number(v) || 0);
 export const pct = (v) => `${(Number(v) * 100 || 0).toFixed(0)}%`;

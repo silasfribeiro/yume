@@ -125,13 +125,14 @@ export async function render(el) {
     const s = $('#pushStatus', el); if (!s) return;
     s.textContent = nomes[st] || st;
     const b = $('#pushBtn', el);
-    b.innerHTML = st === 'ativo' ? `<button class="btn sec sm">Desativar</button>` : (st === 'desligado' ? `<button class="btn sm">Ativar</button>` : '');
+    b.innerHTML = st === 'ativo' ? `<button class="btn ghost sm" style="opacity:.7">desativar</button>` : (st === 'desligado' ? `<button class="btn sm">Ativar</button>` : '');
     const btn = b.querySelector('button'); if (!btn) return;
     btn.onclick = async () => {
+      if (st === 'ativo' && !(await confirmar('Parar de receber notificações neste aparelho?', { ok: 'Desativar' }))) return;
       btn.disabled = true;
       try { if (st === 'ativo') await desativarPush(); else { await ativarPush(user?.email); toast('Notificações ativadas neste aparelho 🔔'); } }
       catch (e) { toast(e.message, true); }
-      desenharPush();
+      setTimeout(desenharPush, 1500);
     };
   };
   desenharPush();

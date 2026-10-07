@@ -17,6 +17,6 @@ jobs:
           URL=$(grep -oP 'SUPABASE_URL:\s*"\K[^"]+' config.js)
           KEY=$(grep -oP 'SUPABASE_ANON_KEY:\s*"\K[^"]+' config.js)
           echo "Consultando $URL"
-          curl -sS -f "$URL/rest/v1/categorias?select=id&limit=1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY"
+          curl -sS -f "$URL/rest/v1/categorias?select=id&limit=1" -H "apikey: $KEY"
           echo
           echo "Ok!"

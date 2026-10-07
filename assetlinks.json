@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.silasfribeiro.yume",
+        "sha256_cert_fingerprints": ["85:CB:AB:EA:4B:90:84:6A:52:59:AE:75:D7:D5:ED:A7:63:14:9B:BC:E7:D4:92:8F:A8:9B:EB:0E:AB:04:3E:6D"]
+      }
+    }]

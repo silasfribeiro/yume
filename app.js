@@ -94,6 +94,7 @@ function telaLogin() {
         <div class="field"><label class="f">Senha</label><input class="in" type="password" name="senha" autocomplete="current-password" required></div>
         <button class="btn full" type="submit">Entrar</button>
       </form>
+      <p class="small" style="margin:14px 0 0"><a href="android.html">📱 Baixar o app para Android</a></p>
     </div></div>`;
   document.getElementById('flogin').onsubmit = async (e) => {
     e.preventDefault();

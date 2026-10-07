@@ -117,12 +117,13 @@ export function formProduto(p = null, { duplicar = false } = {}) {
       <div class="grid g3">
         <div class="field"><label class="f">Preço (R$) *</label><input class="in" name="preco" inputmode="decimal" required value="${nf(d.preco)}" placeholder="0,00"></div>
         <div class="field"><label class="f">Custo (R$)</label><input class="in" name="custo" inputmode="decimal" value="${nf(d.custo)}" placeholder="0,00"></div>
-        <div class="field"><label class="f">Estoque mín.</label><input class="in" name="estoque_minimo" type="number" inputmode="numeric" min="0" value="${d.estoque_minimo ?? 0}"></div>
+        <div class="field"><label class="f">Estoque mín.</label><input class="in" name="estoque_minimo" type="number" inputmode="numeric" min="0" value="${d.estoque_minimo ?? 0}" title="Quando o total chegar nesse número, o app avisa"></div>
       </div>
+      <p class="small muted" style="margin:-4px 0 12px">Estoque mínimo: quando o total chegar nesse número, o app marca como "estoque baixo" e manda notificação. Deixe 0 para não avisar.</p>
       ${novo ? `<div class="card" style="background:var(--nevoa);box-shadow:none;margin-bottom:12px">
         <label class="f">Estoque inicial</label>
         <div class="row">${qtyHTML('qtd_inicial', 0, 0)}<span>em</span>
-          <select class="in grow" name="local_inicial">${locaisFixos().map(l => `<option value="${l.id}" ${l.tipo === 'atelie' ? 'selected' : ''}>${esc(l.nome)}</option>`).join('')}</select></div></div>` : ''}
+          <select class="in grow" name="local_inicial">${locaisFixos().map(l => `<option value="${l.id}" ${l.tipo === 'atelie' ? 'selected' : ''}>${esc(l.nome)}</option>`).join('')}</select></div></div>` : correcaoHTML(p)}
       <div class="field"><label class="f">Observações</label><textarea class="in" name="observacoes">${esc(d.observacoes || '')}</textarea></div>
       <label class="row field"><input type="checkbox" name="ativo" ${d.ativo !== false ? 'checked' : ''}> Produto ativo (aparece nas vendas)</label>
       <button class="btn full" type="submit">${ic('check')}Salvar</button>
@@ -170,11 +171,55 @@ export function formProduto(p = null, { duplicar = false } = {}) {
             if (qi > 0) await q(sb.rpc('registrar_movimentos', { p: { tipo: 'entrada', destino_id: f.get('local_inicial'), observacao: 'Estoque inicial', itens: [{ produto_id: id, quantidade: qi }] } }));
           } else {
             await q(sb.from('produtos').update(reg).eq('id', id));
+            await aplicarCorrecao(p, f);
           }
           await Promise.all([recarregarProdutos(), recarregarEstoque()]);
           close(); toast('Produto salvo 🌿');
           if (novo) location.hash = `#/produto/${id}`; else window.rotear();
         } catch (err) { toast(err.message, true); btn.disabled = false; btn.innerHTML = 'Salvar'; }
+      };
+    }
+  });
+}
+
+// ---------- Correção manual da quantidade ----------
+function locaisParaCorrigir(p) {
+  const ids = new Set(locaisFixos().map(l => l.id));
+  S.estoque.filter(e => e.produto_id === p.id && e.quantidade !== 0).forEach(e => ids.add(e.local_id));
+  return [...ids].map(loc).filter(Boolean);
+}
+function correcaoHTML(p) {
+  return `<div class="card" style="background:var(--nevoa);box-shadow:none;margin-bottom:12px">
+    <label class="f">Quantidade em estoque</label>
+    <p class="small muted" style="margin:0 0 6px">Errou na contagem? Corrija aqui. Fica registrado como "ajuste" no histórico.</p>
+    ${locaisParaCorrigir(p).map(l => `<div class="row between" style="padding:4px 0"><span>${esc(l.nome)}</span>${qtyHTML('corr_' + l.id, est(p.id, l.id), 0)}</div>`).join('')}
+  </div>`;
+}
+async function aplicarCorrecao(p, f, obs = 'Correção manual') {
+  let n = 0;
+  for (const l of locaisParaCorrigir(p)) {
+    const v = f.get('corr_' + l.id); if (v === null) continue;
+    const dif = Math.max(0, Number(v) || 0) - est(p.id, l.id);
+    if (!dif) continue;
+    await q(sb.rpc('registrar_movimentos', { p: { tipo: 'ajuste', [dif > 0 ? 'destino_id' : 'origem_id']: l.id, observacao: obs, itens: [{ produto_id: p.id, quantidade: Math.abs(dif) }] } }));
+    n++;
+  }
+  return n;
+}
+export function corrigirEstoque(p) {
+  modal(`<div class="mh"><h2>Corrigir quantidade</h2><button class="btn ghost icon-only" data-close>${ic('x')}</button></div>
+    <p class="muted" style="margin-top:0">${esc(p.nome)}</p>
+    <form id="fc">${correcaoHTML(p)}
+      <div class="field"><input class="in" name="obs" placeholder="Motivo (opcional): contei errado, perda, brinde..."></div>
+      <button class="btn full">${ic('check')}Salvar quantidades</button></form>`, {
+    onMount: (m, close) => {
+      bindQty(m);
+      $('#fc', m).onsubmit = async e => {
+        e.preventDefault(); const f = new FormData(e.target);
+        try {
+          const n = await aplicarCorrecao(p, f, f.get('obs') || 'Correção manual');
+          await recarregarEstoque(); close(); toast(n ? 'Quantidade corrigida 🌿' : 'Nada mudou'); window.rotear();
+        } catch (err) { toast(err.message, true); }
       };
     }
   });
@@ -242,6 +287,7 @@ export async function renderDetalhe(el, id, vivo) {
           </div>
           <div class="row" style="margin-top:10px">
             <button class="btn sm" id="ent">${ic('plus')}Dar entrada</button>
+            <button class="btn sec sm" id="corr">${ic('edit')}Corrigir quantidade</button>
             <a class="btn sec sm" href="#/movimentar">${ic('swap')}Transferir / ajustar</a>
           </div>
         </div>
@@ -258,6 +304,7 @@ export async function renderDetalhe(el, id, vivo) {
   $('#ed', el).onclick = () => formProduto(p);
   $('#dup', el).onclick = () => formProduto(p, { duplicar: true });
   $('#ent', el).onclick = () => entradaRapida(p);
+  $('#corr', el).onclick = () => corrigirEstoque(p);
   $('#del', el).onclick = async () => {
     const { count } = await sb.from('venda_itens').select('id', { count: 'exact', head: true }).eq('produto_id', p.id);
     if (count > 0) {

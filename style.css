@@ -182,3 +182,36 @@ header.top .brand .icon{color:var(--folha)}
 .loading{display:flex;justify-content:center;padding:40px}
 .spin{width:34px;height:34px;border:4px solid var(--borda-forte);border-top-color:var(--oliva);border-radius:50%;animation:sp 0.8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- Ajustes para celular ---------- */
+@media (max-width: 600px) {
+  html { font-size: 15px; }
+  main { padding: 12px 12px calc(var(--nav-h) + 24px); }
+  h1 { font-size: 1.3rem; } h2 { font-size: 1.1rem; } h3 { font-size: 1rem; }
+  .page-head { margin: 2px 0 10px; }
+  .card { padding: 12px; border-radius: 16px; }
+  .grid { gap: 10px; }
+  .stat { padding: 11px; border-radius: 16px; }
+  .stat .num { font-size: 1.2rem; }
+  .stat .lbl { font-size: .74rem; }
+  .btn { padding: 8px 14px; min-height: 40px; font-size: .92rem; gap: 6px; }
+  .btn.sm { padding: 5px 11px; min-height: 32px; font-size: .82rem; }
+  .btn .icon { width: 18px; height: 18px; }
+  .tabs { padding: 3px; gap: 3px; }
+  .tabs button { padding: 7px 8px; font-size: .8rem; }
+  input.in, select.in, textarea.in { padding: 9px 11px; min-height: 40px; border-radius: 10px; }
+  .search input.in { padding-left: 38px; }
+  .search .icon { top: 10px; left: 11px; }
+  .qty button { width: 32px; height: 32px; }
+  .qty input { width: 38px; }
+  .li { gap: 10px; padding: 8px 0; }
+  .thumb { width: 40px; height: 40px; border-radius: 10px; }
+  .cart-bar { padding: 9px 12px; gap: 10px; }
+  .cart-bar .num { font-size: 1.1rem; }
+  .chip { padding: 5px 12px; font-size: .8rem; }
+  .prod-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .pos-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .modal { padding: 14px 14px calc(14px + env(safe-area-inset-bottom)); }
+  nav.bottom a { font-size: .68rem; }
+  header.top { min-height: 52px; padding: 8px 12px; }
+}

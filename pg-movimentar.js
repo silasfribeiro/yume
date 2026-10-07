@@ -20,9 +20,9 @@ export async function render(el) {
   el.innerHTML = `
     <div class="page-head"><h1>Movimentar estoque</h1></div>
     <div class="tabs" id="tabs">
-      <button data-a="entrada">Entrada / produção</button>
+      <button data-a="entrada">Entrada</button>
       <button data-a="transferencia">Transferir</button>
-      <button data-a="ajuste">Ajustar contagem</button>
+      <button data-a="ajuste">Corrigir</button>
     </div>
     <div class="card" id="topo"></div>
     <div class="search field" style="margin-top:14px">${ic('search')}<input class="in" id="busca" placeholder="Filtrar produtos..."></div>

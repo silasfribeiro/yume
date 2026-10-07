@@ -71,6 +71,9 @@ export async function render(el) {
             .map(([k, t]) => `<label class="small" style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;cursor:pointer"><input type="checkbox" style="margin-top:3px;flex:none" data-notif="${k}" ${S.config[k] === false ? '' : 'checked'}><span>${t}</span></label>`).join('')}
           <button class="btn sec sm" id="notifTeste" style="margin-top:8px">Enviar notificação de teste</button>
           <p class="small muted" style="margin-bottom:0">As notificações valem para vocês dois. No iPhone, o push só funciona com o app adicionado à tela inicial.</p></div>
+        <div class="card"><h3>📱 App para Android</h3>
+          <p class="small" style="margin-top:6px">Instale o Yume no celular como app, em tela cheia e com notificações. Ele se atualiza sozinho.</p>
+          <a class="btn sec" href="android.html">${ic('download')}Baixar o app Android</a></div>
         <div class="card"><h3>${ic('backup')} Backup</h3>
           <p class="small" style="margin-top:6px">Baixa todos os dados (produtos, estoque, vendas, eventos) num arquivo. Vale fazer uma vez por mês e guardar no Drive.</p>
           <button class="btn sec" id="bkp">${ic('download')}Baixar backup</button></div>

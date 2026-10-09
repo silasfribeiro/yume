@@ -64,7 +64,6 @@ export async function render(el) {
         <div class="card" id="notif"><h3>🔔 Notificações</h3>
           <div class="list" style="margin-top:6px">
             <div class="li"><div class="grow"><b>Push neste aparelho</b><div class="small muted" id="pushStatus">${pushConfigurado() ? 'verificando...' : 'ainda não configurado'}</div></div><span id="pushBtn"></span></div>
-            <div class="li"><div class="grow"><b>Telegram</b><div class="small muted">${S.config.telegram_chat_id ? 'grupo conectado ✓' : 'ainda não configurado'}</div></div></div>
           </div>
           <label class="f" style="margin-top:10px">Avisar quando:</label>
           ${[['notif_venda', '💰 Uma venda for registrada'], ['notif_estoque', '⚠️ Um produto ficar com estoque baixo ou esgotar no Box'], ['notif_contagem', '📋 A contagem do Box for feita'], ['notif_evento', '🎪 Um evento for fechado'], ['notif_resumo', '📊 Resumo semanal (segunda, 9h)']]

@@ -105,7 +105,7 @@ export async function render(el, _, vivo) {
         <div class="stat"><div class="lbl">No Box agora</div><div class="num">${num(unBox)} un.</div><div class="small">${money(valBox)} em produtos</div></div>
       </div>
 
-      <div class="grid g2 stack-sm" style="margin-top:14px;align-items:start">
+      <div class="grid g2 stack-sm" style="margin-top:14px">
         <div class="card">
           <div class="row between"><h3>${ic('star')} Campeões</h3>${precisaRepor.length ? `<button class="btn sm folha" id="reporC">Repor ${precisaRepor.length}</button>` : ''}</div>
           ${campeoes.length ? `<div class="list">${campeoes.map(l => `<a class="li" href="#/produto/${l.id}" style="text-decoration:none"><div class="thumb">${l.p.foto_url ? `<img src="${esc(l.p.foto_url)}">` : ic('image')}</div>
@@ -120,7 +120,7 @@ export async function render(el, _, vivo) {
         </div>
       </div>
 
-      <div class="grid g2 stack-sm" style="margin-top:14px;align-items:start">
+      <div class="grid g2 stack-sm" style="margin-top:14px">
         <div class="card"><h3>Por categoria</h3>${barras(porCat)}</div>
         <div class="card"><h3>Por coleção</h3>${barras(porCol)}</div>
       </div>

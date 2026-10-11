@@ -57,7 +57,7 @@ export async function render(el, _, vivo) {
       <div class="stat"><div class="lbl">Estoque (custo)</div><div class="num">${money(valCusto)}</div><div class="small">${S.produtos.filter(p => p.ativo).length} produtos ativos</div></div>
     </div>
 
-    <div class="grid g2 stack-sm" style="margin-top:14px;align-items:start">
+    <div class="grid g2 stack-sm" style="margin-top:14px">
       <div class="card"><h3>Vendas por canal · 6 meses</h3><div style="margin-top:8px">${barrasEmpilhadas(labels, [
         { nome: 'Box', cor: '#3F4531', valores: sBox }, { nome: 'Eventos', cor: '#A6C969', valores: sEv }, { nome: 'Direta / online', cor: '#FEE398', valores: sAt }])}</div></div>
       <a class="card" href="#/box" style="text-decoration:none;display:block;background:var(--manteiga)">
@@ -69,7 +69,7 @@ export async function render(el, _, vivo) {
       </a>
     </div>
 
-    <div class="grid g2 stack-sm" style="margin-top:14px;align-items:start">
+    <div class="grid g2 stack-sm" style="margin-top:14px">
       <div class="card"><h3>${ic('star')} Top 5 do mês</h3>
         ${top.length ? `<div class="list">${top.map(([id, r], i) => { const p = prod(id); return `<a class="li" href="#/produto/${id}" style="text-decoration:none"><b style="width:18px">${i + 1}</b><div class="thumb">${p?.foto_url ? `<img src="${esc(p.foto_url)}">` : ic('image')}</div><div class="grow"><b>${esc(p?.nome || '—')}</b><div class="small muted">${money(r.v)}</div></div><span class="badge">${r.q} un.</span></a>`; }).join('')}</div>` : '<p class="muted small">Nenhuma venda este mês ainda.</p>'}
       </div>

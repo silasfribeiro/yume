@@ -36,7 +36,7 @@ nav.bottom a.ativo .pill{background:var(--salvia)}
   main{margin-left:200px;padding-bottom:40px}
   .so-mobile{display:none!important}
 }
-@media(min-width:1300px){main{margin-left:auto}}
+@media(min-width:1300px){main{margin-left:max(216px, calc(50% - 550px))}}
 
 /* ---------- Componentes ---------- */
 .card{background:var(--creme);border-radius:var(--r);box-shadow:var(--sombra);padding:16px;border:1px solid var(--borda)}

@@ -1,11 +1,11 @@
 name: Manter banco ativo
 
-# O Supabase gratuito pausa o projeto depois de 7 dias sem uso.
-# Este robo faz uma consulta a cada 3 dias para isso nao acontecer.
-# Se a rede do GitHub falhar na hora, ele tenta de novo (ate 6 vezes).
+# O Supabase gratuito pausa o projeto quando fica sem uso.
+# Este robo roda TODO DIA: chama a funcao ping() (grava a hora no banco)
+# e faz uma leitura. Se a rede falhar, tenta de novo (ate 6 vezes).
 on:
   schedule:
-    - cron: "17 12 */3 * *"
+    - cron: "17 12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -19,12 +19,14 @@ jobs:
           KEY=$(grep -oP 'SUPABASE_ANON_KEY:\s*"\K[^"]+' config.js)
           echo "Consultando $URL"
           for i in 1 2 3 4 5 6; do
-            if curl -sS -f --max-time 30 --retry 3 --retry-delay 5 --retry-all-errors \
-                 "$URL/rest/v1/categorias?select=id&limit=1" -H "apikey: $KEY"; then
+            if curl -sS -f --max-time 30 -X POST "$URL/rest/v1/rpc/ping" \
+                 -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}' \
+               && curl -sS -f --max-time 30 "$URL/rest/v1/categorias?select=id&limit=1" -H "apikey: $KEY"; then
               echo; echo "Ok! (tentativa $i)"; exit 0
             fi
             echo "Falhou na tentativa $i, esperando 30s..."
             sleep 30
           done
-          echo "Nao consegui falar com o Supabase depois de varias tentativas."
+          echo "Nao consegui falar com o Supabase. Ele pode estar PAUSADO:"
+          echo "abra https://supabase.com/dashboard/project/phzaemtfoypxeaivjofy e clique em Resume project."
           exit 1
